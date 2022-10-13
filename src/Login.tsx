@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userLogin } from "./service";
 import { encrypt, userLoginControl } from "./util";
-
+import { Helmet } from "react-helmet";
 function Login() {
   const navigate = useNavigate();
 
@@ -45,6 +45,10 @@ function Login() {
   const [AlertMessage, setAlertMessage] = useState("");
   return (
     <>
+      <Helmet>
+        <title>Admin Login</title>
+        <meta name="description" content="Admin login"></meta>
+      </Helmet>
       <div className="row">
         <div className="col-sm-4"></div>
         <div className="col-sm-4">

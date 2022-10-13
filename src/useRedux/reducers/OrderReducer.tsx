@@ -10,5 +10,7 @@ export const OrderReducer = (state: Order[] = [], action: OrderAction) => {
 
     case OrderType.ORDER_LIST:
       return action.payload;
+    default:
+      return state;
   }
 };

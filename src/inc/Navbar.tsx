@@ -4,13 +4,18 @@ import { Bilgiler } from "../models/IUser";
 import { order } from "../service";
 import { OrderAction } from "../useRedux/actions/OrderAction";
 import { OrderType } from "../useRedux/types/OrderType";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "../useRedux/store";
+import { SearchAction } from "../useRedux/actions/SearchAction";
+import { SearchType } from "../useRedux/types/SearchType";
 
 function Navbar(item: { user: Bilgiler }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const selectedData = useSelector(selectorReturningObject, shallowEqual)
+  const orderSelector = useSelector((item: StateType) => item.OrderReducer);
+  const searchSelector = useSelector((item: StateType) => item.SearchReducer);
+
   const dispatch = useDispatch();
   const logout = () => {
     localStorage.removeItem("user");
@@ -34,6 +39,14 @@ function Navbar(item: { user: Bilgiler }) {
       });
     }
   }, []);
+
+  const fncSearch = (txt: string) => {
+    const sendAction: SearchAction = {
+      type: SearchType.SEARCH_CHANGE,
+      payload: txt,
+    };
+    dispatch(sendAction);
+  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-light">
@@ -102,16 +115,21 @@ function Navbar(item: { user: Bilgiler }) {
             </li>
             <li className="nav-item">
               <a className="nav-link disabled">
-                {item.user.userName} {item.user.userSurname}
+                {item.user.userName} {item.user.userSurname} (
+                {orderSelector.length})
               </a>
             </li>
           </ul>
           <form className="d-flex" role="search">
             <input
+              value={searchSelector}
               className="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              onChange={(evt) => {
+                fncSearch(evt.target.value);
+              }}
             />
             <button className="btn btn-outline-success" type="submit">
               Search
@@ -124,6 +142,3 @@ function Navbar(item: { user: Bilgiler }) {
 }
 
 export default Navbar;
-function useSelector(selectorReturningObject: any, shallowEqual: any) {
-  throw new Error("Function not implemented.");
-}

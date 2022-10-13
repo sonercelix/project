@@ -35,6 +35,8 @@ const config = axios.create({
 });
 
 export const allProduct = () => {
+  console.log("test");
+
   const sendParams = {
     start: "0",
   };

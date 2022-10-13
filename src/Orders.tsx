@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { IOrders, Order } from "./models/IOrders";
 import { order } from "./service";
+import { StateType } from "./useRedux/store";
+import { useSelector } from "react-redux";
 
 function Orders() {
   const [orderArray, setOrderArray] = useState<Order[]>([]);
 
-  // const orderSelector = useSelector(selectorReturningObject, shallowEqual)
+  const orderSelector = useSelector((item: StateType) => item.OrderReducer);
 
-  useEffect(() => {
-    order()?.then((res) => {
-      if (typeof res.data.orderList === "boolean") {
-        setOrderArray([]);
-      } else {
-        setOrderArray(res.data.orderList);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   order()?.then((res) => {
+  //     if (typeof res.data.orderList === "boolean") {
+  //       setOrderArray([]);
+  //     } else {
+  //       setOrderArray(res.data.orderList);
+  //     }
+  //   });
+  // }, []);
 
   return (
     <>
@@ -30,7 +32,7 @@ function Orders() {
           </tr>
         </thead>
         <tbody>
-          {orderArray.map((item, index) => (
+          {orderSelector.map((item, index) => (
             <tr key={index}>
               <th scope="row">{item.urun_id}</th>
               <td>
@@ -48,6 +50,3 @@ function Orders() {
 }
 
 export default Orders;
-function useSelector(selectorReturningObject: any, shallowEqual: any) {
-  throw new Error("Function not implemented.");
-}

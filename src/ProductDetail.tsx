@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { IProBilgiler } from "./models/IProduct";
-import { addBasket } from "./service";
+import { addBasket, order } from "./service";
+import { useDispatch } from "react-redux";
+import { OrderAction } from "./useRedux/actions/OrderAction";
+import { OrderType } from "./useRedux/types/OrderType";
 
 function ProductDetail() {
   const { state } = useLocation();
@@ -27,6 +30,7 @@ function ProductDetail() {
     }
   }, []);
 
+  const dispatch = useDispatch();
   function addClickBasket() {
     if (product?.productId) {
       const basket = addBasket(product?.productId);
@@ -38,6 +42,20 @@ function ProductDetail() {
               toast.success(res.data.order[0].mesaj, {
                 position: toast.POSITION.TOP_CENTER,
               });
+
+              const orderService = order();
+              if (orderService) {
+                orderService.then((res) => {
+                  const order = res.data.orderList;
+                  if (typeof order !== "boolean") {
+                    const orderAction: OrderAction = {
+                      type: OrderType.ORDER_LIST,
+                      payload: order,
+                    };
+                    dispatch(orderAction);
+                  }
+                });
+              }
             }
           })
           .catch((ex) => {
