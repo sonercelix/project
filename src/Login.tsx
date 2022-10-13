@@ -1,7 +1,21 @@
-import React, { useState } from "react";
+import React, { Component, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { userLogin } from "./service";
+import { encrypt, userLoginControl } from "./util";
 
 function Login() {
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const user = userLoginControl();
+  //   console.log(user);
+  //   if (user) {
+  //     navigate("/dashboard");
+  //   }
+  // }, []);
+
+  const [remember, setRemember] = useState(false);
+
   const sendForms = (evt: React.FormEvent) => {
     evt.preventDefault();
     userLogin(email, password)
@@ -10,10 +24,12 @@ function Login() {
           console.log(res.data.user[0].bilgiler?.userName);
           setAlertMessage("");
           const stBilgiler = JSON.stringify(res.data.user[0].bilgiler);
-          localStorage.setItem("user", stBilgiler);
+          const encryptStBilgiler = encrypt(stBilgiler);
+          sessionStorage.setItem("user", encryptStBilgiler);
+          if (remember) localStorage.setItem("user", encryptStBilgiler);
           window.location.href = "/dashboard";
         } else {
-          setAlertMessage("Kullanıcı bilgileri bulunamadı");
+          setAlertMessage("Kullanici bilgileri bulunamadi");
         }
       })
       .catch((err) => {
@@ -63,6 +79,22 @@ function Login() {
                 placeholder="Password"
               />
             </div>
+
+            <div className="mb-3 form-check">
+              <input
+                onChange={(evt) => {
+                  setRemember(!remember);
+                }}
+                className="form-check-input"
+                type="checkbox"
+                value=""
+                id="remember"
+              />
+              <label className="form-check-label" htmlFor="remember">
+                Beni hatırla
+              </label>
+            </div>
+
             <button type="submit" className="btn btn-success">
               Login
             </button>
@@ -75,3 +107,6 @@ function Login() {
 }
 
 export default Login;
+function componentDidMount() {
+  throw new Error("Function not implemented.");
+}
